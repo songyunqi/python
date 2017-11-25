@@ -92,6 +92,8 @@ class AutoBatchProcess:
         # driver.find_element_by_xpath("//form[@id='login-form']/div[@class='login-btn']/a")
         driver.switch_to.window(handles[1])
 
+        self.quit(driver)
+
     def batch_process(self):
         self.load_user()
         threads = []
