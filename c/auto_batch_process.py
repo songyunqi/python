@@ -1,7 +1,7 @@
 from threading import Thread
+from time import sleep
 
 from selenium import webdriver
-from selenium.common.exceptions import MoveTargetOutOfBoundsException
 from selenium.webdriver import ActionChains
 
 
@@ -46,7 +46,12 @@ class AutoBatchProcess:
         driver.implicitly_wait(1)
         e_username = driver.find_element_by_id('username')
         e_password = driver.find_element_by_id('password')
+
+        # text msg
+        valid_msg = driver.find_element_by_xpath("//div[@id='J_StaticForm']/div/div[2]")
+
         slider = driver.find_element_by_xpath("//div[@id='J_StaticForm']/div/div[3]")
+
         login_btn = driver.find_element_by_xpath("//form[@id='login-form']/div[@class='login-btn']/a")
 
         if e_username:
@@ -67,19 +72,26 @@ class AutoBatchProcess:
         if e_password:
             e_password.click()
 
+        # 等待滑块
+        sleep(0.1)  # 等待停顿时间
+
         if slider:
             print("get slider")
             action = ActionChains(driver)
             action.click_and_hold(slider).perform()
-            for index in range(10):
-                try:
-                    action.move_by_offset(50, 0).perform()
-                except MoveTargetOutOfBoundsException:
-                    break
-            action.reset_actions()
 
-        """ slide ok """
-        slider.click()
+            while True:
+                action.move_by_offset(10, 0).perform()
+                if valid_msg.text == "验证通过":
+                    action.release(slider).perform()
+                    break
+
+                    # for index in range(20):
+                    #     try:
+                    #         action.move_by_offset(10, 0).perform()
+                    #         # 平行移动鼠标
+                    #     except UnexpectedAlertPresentException:
+                    #         break
 
         driver.implicitly_wait(1)
 
@@ -88,11 +100,31 @@ class AutoBatchProcess:
 
     def process(self, driver, username, password):
         self.login(driver, username, password)
-        handles = driver.window_handles
-        # driver.find_element_by_xpath("//form[@id='login-form']/div[@class='login-btn']/a")
-        driver.switch_to.window(handles[1])
 
-        self.quit(driver)
+        # 登录成功之后还是当前页面
+        financing = driver.find_element_by_xpath("//div[@class='nav']/a[1]")
+        if financing:
+            financing.click()
+
+        handles = driver.window_handles
+        if len(handles) > 1:
+            driver.switch_to.window(handles[1])
+
+        print("ng.....")
+
+        timing_financing = driver.find_element_by_xpath("//div[@class='sub-nav-content']/a[3]")
+        if timing_financing:
+            timing_financing.click()
+        handles = driver.window_handles
+        if len(handles) > 2:
+            driver.switch_to.window(handles[2])
+
+        print("ng.....")
+
+        bill = driver.find_element_by_xpath("//div[@id='tabCaiyunMain']/ul/li[2]")
+
+        if bill:
+            bill.click()
 
     def batch_process(self):
         self.load_user()
