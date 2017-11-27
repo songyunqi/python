@@ -5,6 +5,15 @@ from selenium import webdriver
 from selenium.webdriver import ActionChains
 
 
+class UserInfo:
+    pass
+
+    def __init__(self, username, password, pin):
+        self.username = username
+        self.password = password
+        self.pin = pin
+
+
 class AutoBatchProcess:
     pass
 
@@ -13,10 +22,16 @@ class AutoBatchProcess:
         self.file = file
         self.vendor = vendor
         self.lines = None
+        self.users = []
 
     def load_user(self):
         with open(self.file, 'r') as f:
             self.lines = f.readlines()
+
+        for line in self.lines:
+            kv_pair = line.split(",")
+            t_user = UserInfo(kv_pair[0], kv_pair[1], kv_pair[2])
+            self.users.append(t_user)
 
     def quit(self, driver):
         driver.quit()
@@ -101,8 +116,8 @@ class AutoBatchProcess:
         if login_btn:
             login_btn.click()
 
-    def process(self, driver, username, password):
-        self.login(driver, username, password)
+    def process(self, driver, user):
+        self.login(driver, user.username, user.password)
 
         # 登录成功之后还是当前页面
         financing = driver.find_element_by_xpath("//div[@class='nav']/a[1]")
@@ -132,16 +147,15 @@ class AutoBatchProcess:
     def batch_process(self):
         self.load_user()
         threads = []
-        for line in self.lines:
-            kv_pair = line.split(",")
+        for t_user in self.users:
+            # kv_pair = line.split(",")
             driver = self.get_driver()
-            t = Thread(target=self.process, args=(driver, kv_pair[0], kv_pair[1]))
+            t = Thread(target=self.process, args=(driver, t_user))
             threads.append(t)
         for thr in threads:
             thr.start()
 
         input("\n\n Press the enter key to exit.")
-
 
 if __name__ == '__main__':
     pass
