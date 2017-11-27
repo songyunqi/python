@@ -93,16 +93,17 @@ class AutoBatchProcess:
         if slider:
             print("get slider")
             action = ActionChains(driver)
-
             action.click_and_hold(slider).perform()
 
             loop_time = 0
             expected_times = 10
+
             while True:
                 action.move_by_offset(10, 0).perform()
                 sleep(0.1)
                 if loop_time >= expected_times:
-                    action.release(slider).perform()
+                    e_username.click()
+
                 if valid_msg.text == "验证通过":
                     break
                 else:
@@ -140,7 +141,6 @@ class AutoBatchProcess:
         print("continue....")
 
         bill = driver.find_element_by_xpath("//div[@id='tabCaiyunMain']/ul/li[2]")
-
         if bill:
             bill.click()
 
@@ -156,6 +156,7 @@ class AutoBatchProcess:
             thr.start()
 
         input("\n\n Press the enter key to exit.")
+
 
 if __name__ == '__main__':
     pass
