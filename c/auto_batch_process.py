@@ -78,20 +78,25 @@ class AutoBatchProcess:
         if slider:
             print("get slider")
             action = ActionChains(driver)
+
             action.click_and_hold(slider).perform()
 
+            loop_time = 0
+            expected_times = 10
             while True:
                 action.move_by_offset(10, 0).perform()
-                if valid_msg.text == "验证通过":
+                sleep(0.1)
+                if loop_time >= expected_times:
+                    # e_username.click()
                     action.release(slider).perform()
-                    break
 
-                    # for index in range(20):
-                    #     try:
-                    #         action.move_by_offset(10, 0).perform()
-                    #         # 平行移动鼠标
-                    #     except UnexpectedAlertPresentException:
-                    #         break
+                if valid_msg.text == "验证通过":
+                    break
+                else:
+                    print("继续滑动")
+                    print("loop_time:" + str(loop_time))
+
+                loop_time = loop_time + 1
 
         driver.implicitly_wait(1)
 
@@ -110,7 +115,7 @@ class AutoBatchProcess:
         if len(handles) > 1:
             driver.switch_to.window(handles[1])
 
-        print("ng.....")
+        print("continue....")
 
         timing_financing = driver.find_element_by_xpath("//div[@class='sub-nav-content']/a[3]")
         if timing_financing:
@@ -119,7 +124,7 @@ class AutoBatchProcess:
         if len(handles) > 2:
             driver.switch_to.window(handles[2])
 
-        print("ng.....")
+        print("continue....")
 
         bill = driver.find_element_by_xpath("//div[@id='tabCaiyunMain']/ul/li[2]")
 
