@@ -87,9 +87,7 @@ class AutoBatchProcess:
                 action.move_by_offset(10, 0).perform()
                 sleep(0.1)
                 if loop_time >= expected_times:
-                    # e_username.click()
                     action.release(slider).perform()
-
                 if valid_msg.text == "验证通过":
                     break
                 else:
