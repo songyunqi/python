@@ -144,6 +144,9 @@ class AutoBatchProcess:
         if bill:
             bill.click()
 
+        # quit
+        self.quit(driver)
+
     def batch_process(self):
         self.load_user()
         threads = []
