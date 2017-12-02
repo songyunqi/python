@@ -1,3 +1,4 @@
+import json
 from threading import Thread
 from time import sleep
 
@@ -32,6 +33,13 @@ class AutoBatchProcess:
             kv_pair = line.split(",")
             t_user = UserInfo(kv_pair[0], kv_pair[1], kv_pair[2])
             self.users.append(t_user)
+
+    def load_buy_info(self):
+        with open(self.file, 'r') as f:
+            setting = json.load(f)
+
+    def load_sell_info(self):
+        print("")
 
     def quit(self, driver):
         driver.quit()
@@ -140,12 +148,12 @@ class AutoBatchProcess:
 
         print("continue....")
 
-        bill = driver.find_element_by_xpath("//div[@id='tabCaiyunMain']/ul/li[2]")
+        bill = driver.find_element_by_xpath("//div[@id='tabCaiyunMain']/ul/li[1]")
         if bill:
             bill.click()
 
         # quit
-        self.quit(driver)
+        # self.quit(driver)
 
     def batch_process(self):
         self.load_user()
