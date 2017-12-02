@@ -23,6 +23,7 @@ class AutoBatchProcess:
         self.file = file
         self.vendor = vendor
         self.lines = None
+        self.buy_json = None
         self.users = []
 
     def load_user(self):
@@ -36,7 +37,12 @@ class AutoBatchProcess:
 
     def load_buy_info(self):
         with open(self.file, 'r') as f:
-            setting = json.load(f)
+            self.buy_json = json.load(f)
+
+        t_users = self.buy_json["users"]
+        for a_user in t_users:
+            t_user = UserInfo(a_user["username"], a_user["password"], a_user["pin"])
+            self.users.append(t_user)
 
     def load_sell_info(self):
         print("")
